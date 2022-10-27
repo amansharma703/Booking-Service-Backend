@@ -1,13 +1,13 @@
 import { Schema, model } from 'mongoose';
 
-export interface Booking {
+export interface Seat {
     id?: Schema.Types.ObjectId;
     name: string;
     mobile: string;
     seatIds: string[];
 }
 
-export const schema = new Schema<Booking>(
+export const schema = new Schema<Seat>(
     {
         name: {
             type: String,
@@ -26,4 +26,4 @@ export const schema = new Schema<Booking>(
 )
 
 
-export const Booking = model<Booking>('Booking', schema);
+export const Seat = model<Seat>('Seat', schema);
