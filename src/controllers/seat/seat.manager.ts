@@ -8,10 +8,26 @@ export class SeatManager {
     public getSeatById = async (seatId: string) => {
         return Seat.findOne({ seatId });
     }
-    public getBookingPercentage = async () => {
+    public getBookingPrice = async (seat: Seat) => {
         const seatBooked = await Seat.countDocuments({ isBooked: true });
         const totalSeats = await Seat.countDocuments();
         const percentageBooked = (seatBooked / totalSeats) * 100;
-        return percentageBooked;
+        let price: number;
+        if (percentageBooked > 60) {
+            price = seat?.maxPrice ? seat.maxPrice : seat.normalPrice;
+        } else if (percentageBooked <= 60 && percentageBooked >= 40) {
+            price = seat?.normalPrice ? seat.normalPrice : seat.maxPrice;
+        } else {
+            price = seat?.minPrice ? seat.minPrice : seat.normalPrice;
+        }
+        return price;
+    }
+
+    public updateBookingStatus = async (seatIds: string[]) => {
+        await Seat.updateMany({ 'seatId': { $in: seatIds } }, {
+            $set: {
+                isBooked: true,
+            }
+        });
     }
 }

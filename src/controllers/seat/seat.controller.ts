@@ -33,16 +33,7 @@ export class SeatController {
             throw new ApiError(httpStatus.NOT_FOUND, 'Seat detail not found');
         }
 
-        const percentageBooked = await this._seatManager.getBookingPercentage();
-
-        let price: number;
-        if (percentageBooked > 60) {
-            price = seatDetails?.maxPrice ? seatDetails.maxPrice : seatDetails.normalPrice;
-        } else if (percentageBooked <= 60 && percentageBooked >= 40) {
-            price = seatDetails?.normalPrice ? seatDetails.normalPrice : seatDetails.maxPrice;
-        } else {
-            price = seatDetails?.minPrice ? seatDetails.minPrice : seatDetails.normalPrice;
-        }
+        const price = await this._seatManager.getBookingPrice(seatDetails);
 
         let seat = seatDetails.toObject();
         seat.price = price;

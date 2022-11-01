@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Model } from 'mongoose';
 
 export interface Booking {
     id?: Schema.Types.ObjectId;
@@ -18,6 +18,7 @@ export const schema = new Schema<Booking>(
         email: {
             type: String,
             required: true,
+            unique: true,
             sparse: true,
         },
         mobile: {
@@ -38,5 +39,14 @@ export const schema = new Schema<Booking>(
     }
 )
 
+interface BookingModelInterface extends Model<Booking> {
+    // declare any static methods here
+    isEmailTaken(email: string, excludeUserId?: string): Promise<boolean>;
+}
 
-export const Booking = model<Booking>('Booking', schema);
+schema.static('isEmailTaken', async function (email: string, excludeUserId: string): Promise<boolean> {
+    const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
+    return !!user;
+});
+
+export const Booking = model<Booking, BookingModelInterface>('Booking', schema);
