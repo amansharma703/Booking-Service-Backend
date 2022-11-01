@@ -17,14 +17,14 @@ export class SeatController {
         this.router.get('/',
             catchAsync(this.getAllSeats.bind(this))
         );
-        this.router.post('/:id',
+        this.router.get('/:id',
             catchAsync(this.getSeatbyId.bind(this))
         );
     }
 
     private getAllSeats = async (request: Request, response: Response) => {
-        const booking = await this._seatManager.getAllSeats();
-        response.status(httpStatus.CREATED).send(booking);
+        const seats = await this._seatManager.getAllSeats();
+        response.status(httpStatus.OK).send(seats);
     }
     private getSeatbyId = async (request: Request, response: Response) => {
         const seatId = request.params.id;
@@ -32,6 +32,21 @@ export class SeatController {
         if (!seatDetails) {
             throw new ApiError(httpStatus.NOT_FOUND, 'Seat detail not found');
         }
-        response.status(httpStatus.CREATED).send(seatDetails);
+
+        const percentageBooked = await this._seatManager.getBookingPercentage();
+
+        let price: number;
+        if (percentageBooked > 60) {
+            price = seatDetails?.maxPrice ? seatDetails.maxPrice : seatDetails.normalPrice;
+        } else if (percentageBooked <= 60 && percentageBooked >= 40) {
+            price = seatDetails?.normalPrice ? seatDetails.normalPrice : seatDetails.maxPrice;
+        } else {
+            price = seatDetails?.minPrice ? seatDetails.minPrice : seatDetails.normalPrice;
+        }
+
+        let seat = seatDetails.toObject();
+        seat.price = price;
+
+        response.status(httpStatus.OK).send(seat);
     }
 }

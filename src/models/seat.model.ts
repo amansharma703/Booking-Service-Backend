@@ -6,8 +6,9 @@ export interface Seat {
     seatClass: string;
     maxPrice: number;
     minPrice: number;
-    price: number;
+    normalPrice: number;
     isBooked: boolean;
+    price?: number;
 }
 
 export const schema = new Schema<Seat>(
@@ -26,7 +27,7 @@ export const schema = new Schema<Seat>(
         minPrice: {
             type: Number,
         },
-        price: {
+        normalPrice: {
             type: Number,
         },
         isBooked: {

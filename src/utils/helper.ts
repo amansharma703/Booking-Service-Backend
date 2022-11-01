@@ -17,7 +17,7 @@ export function importExcelData2DB(filePath: string) {
                     B: 'seatId',
                     C: 'seatClass',
                     D: 'minPrice',
-                    E: 'price',
+                    E: 'normalPrice',
                     F: 'maxPrice'
                 }
             }
