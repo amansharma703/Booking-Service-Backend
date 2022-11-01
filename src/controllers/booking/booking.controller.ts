@@ -7,6 +7,7 @@ import { SeatManager } from "../seat/seat.manager";
 import { ApiError } from "../../utils/ApiError";
 import { Seat } from "../../models/seat.model";
 import { validateEmail, validatePhoneNumber } from "../../utils/helper";
+import { Email } from "../../utils/email";
 
 
 export class BookingController {
@@ -14,6 +15,7 @@ export class BookingController {
     private _bookingManager = new BookingManager();
     private _seatManager = new SeatManager();
     private _bookingValidation = new BookingValidation();
+    private _emailManager = new Email();
 
     constructor() {
         this.initializeRoutes();
@@ -47,6 +49,7 @@ export class BookingController {
 
         const booking = await this._bookingManager.createBooking(request.body, amount);
         await this._seatManager.updateBookingStatus(seatIds);
+        await this._emailManager.sendConfirmationEmail(booking.email, seatIds.toString());
         response.status(httpStatus.CREATED).send({ "bookingId": booking._id, "amount": booking.amount });
     }
 
