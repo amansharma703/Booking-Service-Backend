@@ -2,23 +2,37 @@ import { Schema, model } from 'mongoose';
 
 export interface Seat {
     id?: Schema.Types.ObjectId;
-    name: string;
-    mobile: string;
-    seatIds: string[];
+    seatId: string;
+    seatClass: string;
+    maxPrice: number;
+    minPrice: number;
+    price: number;
+    isBooked: boolean;
 }
 
 export const schema = new Schema<Seat>(
     {
-        name: {
+        seatId: {
             type: String,
             required: true,
         },
-        mobile: {
+        seatClass: {
             type: String,
+            required: true,
         },
-        seatIds: [{
-            type: String,
-        }]
+        maxPrice: {
+            type: Number,
+        },
+        minPrice: {
+            type: Number,
+        },
+        price: {
+            type: Number,
+        },
+        isBooked: {
+            type: Boolean,
+            default: false,
+        }
     },
     {
         timestamps: true

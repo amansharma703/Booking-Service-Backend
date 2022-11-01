@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import httpStatus from "http-status";
 import { SeatManager } from './seat.manager';
 import catchAsync from "../../utils/asyncWrapper";
-import { ApiError } from "utils/ApiError";
+import { ApiError } from "../../utils/ApiError";
 
 
 export class SeatController {
